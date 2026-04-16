@@ -1,0 +1,14 @@
+{
+  "job_id": "validate-001-job-0011",
+  "source_stage1_job_id": "job-0011",
+  "template": "ring",
+  "distance_angstrom": "1.9",
+  "multiplicity": "3",
+  "status": "finished",
+  "energy_hartree": -148.743338857395,
+  "min_frequency_cm-1": 0.0,
+  "hard_imag_count": 0,
+  "small_negative_count": 0,
+  "accepted_minimum": "yes",
+  "output_path": "jobs/validate-001-job-0011/output.out"
+}

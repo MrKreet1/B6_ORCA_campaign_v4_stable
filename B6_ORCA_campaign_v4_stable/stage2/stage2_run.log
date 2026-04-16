@@ -1,0 +1,17 @@
+Using ORCA_BIN=/opt/orca/orca
+Using WORKERS=4
+Stable mode stage2: nprocs=1 per job
+=== Running validate-003-job-0017 ===
+=== Running validate-002-job-0014 ===
+=== Running validate-001-job-0011 ===
+=== Running validate-004-job-0019 ===
+=== Running validate-005-job-0073 ===
+=== Running validate-006-job-0064 ===
+=== Running validate-007-job-0055 ===
+=== Running validate-008-job-0067 ===
+=== Running validate-009-job-0058 ===
+=== Running validate-010-job-0061 ===
+Wrote /root/B6_ORCA_campaign_v4_stable/stage2/results/summary.csv
+Wrote /root/B6_ORCA_campaign_v4_stable/stage2/results/validated_minima.csv
+Wrote /root/B6_ORCA_campaign_v4_stable/stage2/results/best_verified_minimum.json
+Done. See /root/B6_ORCA_campaign_v4_stable/stage2/results/validated_minima.csv and /root/B6_ORCA_campaign_v4_stable/stage2/results/best_verified_minimum.json

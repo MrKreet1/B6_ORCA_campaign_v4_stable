@@ -1,0 +1,23 @@
+# Heavy ORCA job directories are intentionally excluded from GitHub.
+stage1/jobs/*
+stage2/jobs/*
+!stage1/jobs/README.md
+!stage2/jobs/README.md
+
+# ORCA-generated runtime and binary artifacts
+*.gbw
+*.densities
+*.densitiesinfo
+*.hess
+*.engrad
+*.opt
+*.property.txt
+*.tmp
+*.bas*
+*.carthess
+*_trj.xyz
+*.bibtex
+
+# OS/editor noise
+Thumbs.db
+.DS_Store

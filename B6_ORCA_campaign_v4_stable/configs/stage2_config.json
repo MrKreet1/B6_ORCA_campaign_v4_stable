@@ -1,0 +1,21 @@
+{
+  "project_name": "B6_stage2_validation_stable",
+  "purpose": "Stable Stage-2 validation for B6 minima using serial ORCA jobs and parallel job-level execution.",
+  "source_stage1_summary": "stage1/results/summary.csv",
+  "take_top_n_finished": 10,
+  "orca_binary_default": "/opt/orca/orca",
+  "nprocs": 1,
+  "maxcore": 1500,
+  "method_line": "! r2SCAN-3c Opt NumFreq TightSCF TightOpt",
+  "geom_block": {
+    "Calc_Hess": true,
+    "Recalc_Hess": 5
+  },
+  "acceptance_rule": {
+    "hard_imag_threshold_cm-1": -20.0,
+    "accepted_if_hard_imag_count": 0
+  },
+  "notes": [
+    "Stable mode: stage2 is serial per job to avoid MPI rank failures."
+  ]
+}

@@ -1,0 +1,11 @@
+job_id,source_stage1_job_id,template,distance_angstrom,multiplicity,stage1_energy_hartree,stage,input_file,output_file
+validate-001-job-0011,job-0011,ring,1.9,3,-148.743338856923,2,input.inp,output.out
+validate-002-job-0014,job-0014,ring,2.05,3,-148.737786657517,2,input.inp,output.out
+validate-003-job-0017,job-0017,ring,2.2,3,-148.73778665709,2,input.inp,output.out
+validate-004-job-0019,job-0019,trigonal_prism,1.45,1,-148.737106377803,2,input.inp,output.out
+validate-005-job-0073,job-0073,distorted_prism_1,1.45,1,-148.737094288566,2,input.inp,output.out
+validate-006-job-0064,job-0064,pentagonal_pyramid,1.9,1,-148.737091827503,2,input.inp,output.out
+validate-007-job-0055,job-0055,pentagonal_pyramid,1.45,1,-148.737091827467,2,input.inp,output.out
+validate-008-job-0067,job-0067,pentagonal_pyramid,2.05,1,-148.737091826342,2,input.inp,output.out
+validate-009-job-0058,job-0058,pentagonal_pyramid,1.6,1,-148.737091826163,2,input.inp,output.out
+validate-010-job-0061,job-0061,pentagonal_pyramid,1.75,1,-148.737091823269,2,input.inp,output.out

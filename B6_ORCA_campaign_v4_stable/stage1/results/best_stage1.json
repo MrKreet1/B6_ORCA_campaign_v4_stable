@@ -1,0 +1,10 @@
+{
+  "job_id": "job-0011",
+  "template": "ring",
+  "distance_angstrom": 1.9,
+  "multiplicity": 3,
+  "status": "finished",
+  "energy_hartree": -148.743338856923,
+  "error_hint": "",
+  "output_path": "jobs/job-0011/output.out"
+}

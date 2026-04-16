@@ -1,0 +1,38 @@
+{
+  "project_name": "B6_stage1_screening_stable",
+  "purpose": "Stable Stage-1 screening for B6 using serial ORCA jobs and parallel job-level execution.",
+  "orca_binary_default": "/opt/orca/orca",
+  "charge": 0,
+  "multiplicities": [
+    1,
+    3,
+    5
+  ],
+  "distance_grid_angstrom": [
+    1.45,
+    1.6,
+    1.75,
+    1.9,
+    2.05,
+    2.2
+  ],
+  "nprocs": 1,
+  "maxcore": 1500,
+  "method_line": "! r2SCAN-3c Opt TightSCF TightOpt",
+  "geom_block": {
+    "Calc_Hess": true,
+    "Recalc_Hess": 5
+  },
+  "templates": [
+    "ring",
+    "trigonal_prism",
+    "octahedral_like",
+    "pentagonal_pyramid",
+    "distorted_prism_1",
+    "distorted_octa_1"
+  ],
+  "notes": [
+    "Stable mode: each ORCA job runs with nprocs=1 to avoid MPI crashes.",
+    "Server resources are used by running multiple independent jobs in parallel."
+  ]
+}
