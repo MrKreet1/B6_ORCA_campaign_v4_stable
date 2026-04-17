@@ -61,6 +61,19 @@ def best_rows_by_key(rows: list[dict[str, str]], key: str) -> list[dict[str, str
     return sorted(best.values(), key=lambda row: as_float(row["energy_hartree"]))
 
 
+def format_energy(row: dict[str, str]) -> str:
+    return f"{as_float(row['energy_hartree']):.12f}"
+
+
+def format_distance(row: dict[str, str]) -> str:
+    return f"{float(row['distance_angstrom']):.2f}"
+
+
+def format_freq(row: dict[str, str]) -> str:
+    value = as_float(row.get("lowest_freq_cm1") or row.get("min_frequency_cm-1"))
+    return f"{(value if value is not None else 0.0):.2f}"
+
+
 def make_template_figure(stage1_finished: list[dict[str, str]]) -> None:
     best_by_template = best_rows_by_key(stage1_finished, "template")
     reference = as_float(best_by_template[0]["energy_hartree"])
@@ -151,42 +164,58 @@ def build_report(stage1_rows: list[dict[str, str]], stage2_rows: list[dict[str, 
     stage2_best = sorted(stage2_true, key=lambda row: as_float(row["energy_hartree"]))[0]
     stage2_reference = as_float(stage2_best["energy_hartree"])
 
-    stage1_by_mult = best_rows_by_key(stage1_finished, "multiplicity")
+    stage1_by_mult = sorted(best_rows_by_key(stage1_finished, "multiplicity"), key=lambda row: int(row["multiplicity"]))
     stage2_by_template = best_rows_by_key(stage2_true, "template")
     rejected_counter = Counter(row["template"] for row in stage2_rejected)
+    stage2_true_ranked = sorted(stage2_true, key=lambda item: as_float(item["energy_hartree"]))
+    stage2_rejected_ranked = sorted(stage2_rejected, key=lambda item: as_float(item["energy_hartree"]))
 
     lines = [
-        "# Results Report",
+        "# Отчет по результатам расчетов B6",
         "",
-        "Отчет ниже содержит только итоговые результаты расчетов без описания workflow и организационной части.",
+        "Ниже приведено изложение только вычислительных результатов кампании без описания организационной схемы запуска и служебных деталей workflow.",
         "",
-        "## 1. Краткий итог",
+        "## 1. Сводка результатов",
         "",
-        f"- Всего расчетов `stage1`: `{len(stage1_rows)}`",
-        f"- Успешно завершено на `stage1`: `{len(stage1_finished)}`",
-        f"- Проверено кандидатов на `stage2`: `{len(stage2_rows)}`",
-        f"- Подтверждено минимумов после частотной проверки: `{len(stage2_true)}`",
-        f"- Отклонено из-за мнимых частот: `{len(stage2_rejected)}`",
+        "Таблица 1. Общая сводка по выполненным расчетам.",
         "",
-        "## 2. Лучший результат всей кампании",
+        "| Показатель | Значение |",
+        "| --- | --- |",
+        f"| Всего расчетов `stage1` | `{len(stage1_rows)}` |",
+        f"| Успешно завершено на `stage1` | `{len(stage1_finished)}` |",
+        f"| Кандидатов, проверенных на `stage2` | `{len(stage2_rows)}` |",
+        f"| Подтвержденных минимумов после частотной проверки | `{len(stage2_true)}` |",
+        f"| Кандидатов, отклоненных из-за мнимых частот | `{len(stage2_rejected)}` |",
         "",
-        f"- Лучшая подтвержденная структура: `{stage2_best['template']}`",
-        f"- Расстояние: `{stage2_best['distance_angstrom']} A`",
-        f"- Мультиплетность: `{stage2_best['multiplicity']}`",
-        f"- Энергия `stage2`: `{as_float(stage2_best['energy_hartree']):.12f} Eh`",
-        f"- Минимальная частота: `{as_float(stage2_best.get('lowest_freq_cm1') or stage2_best.get('min_frequency_cm-1')) or 0.0:.2f} cm^-1`",
+        "## 2. Наилучший результат кампании",
+        "",
+        "Таблица 2. Параметры глобального минимума, подтвержденного расчетом частот.",
+        "",
+        "| Параметр | Значение |",
+        "| --- | --- |",
+        f"| Структурный мотив | `{stage2_best['template']}` |",
+        f"| Начальное расстояние | `{format_distance(stage2_best)} A` |",
+        f"| Мультиплетность | `{stage2_best['multiplicity']}` |",
+        f"| Энергия `stage2` | `{format_energy(stage2_best)} Eh` |",
+        f"| Минимальная частота | `{format_freq(stage2_best)} cm^-1` |",
         "",
         "## 3. Графики",
         "",
-        "### 3.1 Лучший результат по каждому стартовому шаблону (`stage1`)",
+        "### 3.1 Сравнение лучших результатов `stage1` по стартовым шаблонам",
         "",
         "![Best stage1 structure for each template](fig_stage1_best_by_template.png)",
         "",
-        "### 3.2 Ранжирование кандидатов `stage2` с учетом частотной проверки",
+        "*Рисунок 1. Относительные энергии лучших структур `stage1` для каждого стартового геометрического шаблона. За нулевой уровень принят глобальный минимум `stage1`.*",
+        "",
+        "### 3.2 Ранжирование кандидатов `stage2` с учетом частотной валидации",
         "",
         "![Stage2 validation ranking](fig_stage2_validation_rank.png)",
         "",
-        "## 4. Лучшие структуры по мультиплетностям (`stage1`)",
+        "*Рисунок 2. Ранжирование кандидатов `stage2` по энергии с разделением на подтвержденные минимумы и структуры, отклоненные после частотной проверки.*",
+        "",
+        "## 4. Сопоставление лучших структур по мультиплетностям",
+        "",
+        "Таблица 3. Наиболее низкоэнергетические структуры `stage1` для каждой рассмотренной мультиплетности.",
         "",
         "| Multiplicity | Template | Distance, A | Energy, Eh | Delta to global best, kcal/mol |",
         "| --- | --- | --- | --- | --- |",
@@ -198,7 +227,7 @@ def build_report(stage1_rows: list[dict[str, str]], stage2_rows: list[dict[str, 
             "| `{mult}` | `{template}` | `{distance}` | `{energy:.12f}` | `{delta:.4f}` |".format(
                 mult=row["multiplicity"],
                 template=row["template"],
-                distance=row["distance_angstrom"],
+                distance=format_distance(row),
                 energy=as_float(row["energy_hartree"]),
                 delta=rel_kcal(stage1_reference, as_float(row["energy_hartree"])),
             )
@@ -209,16 +238,18 @@ def build_report(stage1_rows: list[dict[str, str]], stage2_rows: list[dict[str, 
             "",
             "## 5. Подтвержденные минимумы после `stage2`",
             "",
+            "Таблица 4. Структуры, сохранившие статус минимума после частотной проверки.",
+            "",
             "| Rank | Template | Distance, A | M | Energy, Eh | Delta to best, kcal/mol |",
             "| --- | --- | --- | --- | --- | --- |",
         ]
     )
-    for idx, row in enumerate(sorted(stage2_true, key=lambda item: as_float(item["energy_hartree"])), start=1):
+    for idx, row in enumerate(stage2_true_ranked, start=1):
         lines.append(
             "| {rank} | `{template}` | `{distance}` | `{mult}` | `{energy:.12f}` | `{delta:.4f}` |".format(
                 rank=idx,
                 template=row["template"],
-                distance=row["distance_angstrom"],
+                distance=format_distance(row),
                 mult=row["multiplicity"],
                 energy=as_float(row["energy_hartree"]),
                 delta=rel_kcal(stage2_reference, as_float(row["energy_hartree"])),
@@ -228,7 +259,9 @@ def build_report(stage1_rows: list[dict[str, str]], stage2_rows: list[dict[str, 
     lines.extend(
         [
             "",
-            "## 6. Лучшие подтвержденные шаблоны (`stage2`)",
+            "## 6. Наиболее конкурентоспособные подтвержденные шаблоны",
+            "",
+            "Таблица 5. Лучшая подтвержденная структура в пределах каждого структурного семейства `stage2`.",
             "",
             "| Template | Best energy, Eh | Delta to best, kcal/mol |",
             "| --- | --- | --- |",
@@ -246,11 +279,36 @@ def build_report(stage1_rows: list[dict[str, str]], stage2_rows: list[dict[str, 
     lines.extend(
         [
             "",
-            "## 7. Что было отброшено на частотной проверке",
+            "## 7. Структуры, отклоненные после частотной проверки",
             "",
         ]
     )
     if stage2_rejected:
+        lines.extend(
+            [
+                "Таблица 6. Кандидаты `stage2`, не подтвердившие статус минимума.",
+                "",
+                "| Template | Distance, A | M | Energy, Eh | Lowest freq, cm^-1 | Hard imag count |",
+                "| --- | --- | --- | --- | --- | --- |",
+            ]
+        )
+        for row in stage2_rejected_ranked:
+            lines.append(
+                "| `{template}` | `{distance}` | `{mult}` | `{energy}` | `{freq}` | `{hard_imag}` |".format(
+                    template=row["template"],
+                    distance=format_distance(row),
+                    mult=row["multiplicity"],
+                    energy=format_energy(row),
+                    freq=format_freq(row),
+                    hard_imag=row.get("hard_imag_count", "n/a"),
+                )
+            )
+        lines.extend(
+            [
+                "",
+                "Распределение отклоненных структур по шаблонам:",
+            ]
+        )
         for template, count in sorted(rejected_counter.items()):
             lines.append(f"- `{template}`: `{count}`")
     else:
@@ -259,11 +317,17 @@ def build_report(stage1_rows: list[dict[str, str]], stage2_rows: list[dict[str, 
     lines.extend(
         [
             "",
-            "## 8. Краткий вывод по результатам",
+            "## 8. Обсуждение результатов",
             "",
-            "В текущем обследованном наборе конфигураций глобальный минимум соответствует триплетной структуре `ring` при `1.90 A`.",
-            "Частотная проверка показала, что два энергетически сильных `ring`-кандидата на больших расстояниях (`2.05 A` и `2.20 A`) не являются истинными минимумами.",
-            "После отбраковки по частотам в финале остаются `trigonal_prism`, `distorted_prism_1` и кластер `pentagonal_pyramid`, но все они лежат примерно на `3.91-3.92 kcal/mol` выше глобального минимума.",
+            "Полученные данные показывают, что в пределах обследованного набора стартовых геометрий и мультиплетностей глобальный минимум соответствует структуре `ring` при мультиплетности `3` и характерном расстоянии `1.90 A`. Этот результат стабильно выделяется как на этапе первичного энергетического ранжирования, так и после частотной валидации.",
+            "Сравнение лучших решений по мультиплетностям указывает на заметное преимущество триплетного состояния. Наиболее выгодная синглетная структура уступает глобальному минимуму примерно `3.91 kcal/mol`, тогда как лучший квинтетный кандидат находится существенно выше по энергии, примерно на `46.16 kcal/mol`.",
+            "Особенно важно, что частотная проверка изменила интерпретацию части энергетически привлекательных решений. Два `ring`-кандидата, располагавшиеся высоко в энергетическом рейтинге `stage1`, после расчета частот показали наличие выраженных мнимых мод и потому не могут рассматриваться как истинные минимумы поверхности потенциальной энергии.",
+            "После исключения ложных минимумов в финальной выборке сохраняются структуры семейств `trigonal_prism`, `distorted_prism_1` и `pentagonal_pyramid`. Эти мотивы образуют достаточно плотный энергетический кластер и располагаются примерно на `3.91-3.92 kcal/mol` выше глобального минимума, что делает их возможными конкурентными локальными минимумами, но не основным кандидатом на наиболее устойчивую конфигурацию.",
+            "Таким образом, итоговая картина расчетов указывает на выраженное доминирование триплетной `ring`-структуры в исследованном пространстве конфигураций, тогда как альтернативные мотивы сохраняют интерес как близкие по энергии локальные минимумы, требующие дальнейшего анализа только в случае расширения поискового пространства.",
+            "",
+            "## 9. Заключение",
+            "",
+            "По совокупности полученных результатов наиболее устойчивой структурой `B6` в исследованном наборе конфигураций является триплетная `ring`-геометрия при `1.90 A`. Частотная проверка оказалась принципиально важной, поскольку позволила исключить два ложных минимума, которые по одному лишь энергетическому критерию выглядели конкурентоспособными. Следовательно, для итоговой интерпретации следует опираться именно на структуры, подтвердившие минимум после расчета частот.",
         ]
     )
 
