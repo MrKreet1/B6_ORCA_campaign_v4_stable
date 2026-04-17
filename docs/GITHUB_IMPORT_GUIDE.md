@@ -13,6 +13,12 @@
    - `stage2/`
    - `docs/`
    - `.gitignore`
+4. Отдельно убедиться, что в `stage2/results/` лежат ключевые публикационные артефакты:
+   - `summary.csv`
+   - `top10.csv`
+   - `best_result.json`
+   - `final_report.md`
+   - `best_structure.xyz` если экспорт делался из полного локального проекта с raw job-данными
 
 ## Вариант 2. Через git из терминала
 

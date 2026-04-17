@@ -18,4 +18,4 @@ for jobdir in "$ROOT_DIR"/jobs/validate-*; do
 done
 wait || true
 python3 "$ROOT_DIR/scripts/collect_stage2_results.py"
-echo "Done. See $ROOT_DIR/results/validated_minima.csv and $ROOT_DIR/results/best_verified_minimum.json"
+echo "Done. See $ROOT_DIR/results/final_report.md and $ROOT_DIR/results/best_result.json"

@@ -70,8 +70,9 @@
 - `nprocs = 1`
 - `maxcore = 1500`
 - Критерий приемки:
-  - `hard_imag_threshold_cm-1 = -20.0`
-  - минимум принимается, если `hard_imag_count = 0`
+  - служебный флаг `accepted_minimum`: `hard_imag_threshold_cm-1 = -20.0` и `hard_imag_count = 0`
+  - строгий научный флаг `is_true_minimum`: `status = finished`, энергия распарсена, `nimag = 0`
+  - в `best_result.json` попадает только true minimum, для которого удалось сохранить `best_structure.xyz`
 
 ## 4. Как работает пайплайн
 
@@ -92,6 +93,7 @@
    - `stage1/results/summary.csv`
    - `stage1/results/top_finished.csv`
    - `stage1/results/best_stage1.json`
+   - а также добавляет поля `error_class`, `final_xyz_available`, `final_xyz_path`
 
 Статус job определяется по тексту `output.out`:
 
@@ -111,12 +113,34 @@
 
 1. Берет `10` лучших завершенных строк из `stage1/results/summary.csv`.
 2. Для каждого кандидата создает `validate-*` job в `stage2/jobs/`.
-3. Копирует финальную геометрию `stage1` в `stage1_final.xyz`.
+3. Восстанавливает финальную геометрию `stage1` в `stage1_final.xyz` по оптимизированному `.xyz` или по последнему блоку координат из `output.out`.
 4. Строит новый `input.inp` уже с `NumFreq`.
 5. После выполнения `collect_stage2_results.py` пишет:
    - `stage2/results/summary.csv`
+   - `stage2/results/top10.csv`
    - `stage2/results/validated_minima.csv`
-   - `stage2/results/best_verified_minimum.json`
+   - `stage2/results/best_result.json`
+   - `stage2/results/best_structure.xyz`
+   - `stage2/results/final_report.md`
+   - `stage2/results/best_verified_minimum.json` как legacy-алиас
+
+`stage2/results/summary.csv` теперь содержит не только энергию, но и поля:
+
+- `nimag`
+- `lowest_freq_cm1`
+- `is_true_minimum`
+- `error_class`
+- `final_xyz_available`
+
+### 4.3 Как определяется истинный минимум
+
+В этом репозитории оптимизация сама по себе не считается достаточным доказательством минимума. Структура считается true minimum только если одновременно выполняются условия:
+
+- ORCA завершился нормально
+- удалось распарсить `FINAL SINGLE POINT ENERGY`
+- после `NumFreq` получено `nimag = 0`
+
+Именно поэтому `stage2` является обязательным этапом, а не косметическим дополнением к `stage1`.
 
 ## 5. Статистика выполнения
 
@@ -324,9 +348,13 @@
 - [stage1/results/summary.csv](stage1/results/summary.csv) — полный ранжированный список `stage1`
 - [stage1/results/top_finished.csv](stage1/results/top_finished.csv) — верхняя часть успешных `stage1` job
 - [stage1/results/best_stage1.json](stage1/results/best_stage1.json) — лучший результат `stage1`
-- [stage2/results/summary.csv](stage2/results/summary.csv) — сводка по всем `10` проверкам `stage2`
-- [stage2/results/validated_minima.csv](stage2/results/validated_minima.csv) — только подтвержденные минимумы
-- [stage2/results/best_verified_minimum.json](stage2/results/best_verified_minimum.json) — лучший подтвержденный минимум
+- [stage2/results/summary.csv](stage2/results/summary.csv) — полная сводка `stage2` с `nimag`, `lowest_freq_cm1`, `is_true_minimum` и `error_class`
+- [stage2/results/top10.csv](stage2/results/top10.csv) — топ-10 кандидатов `stage2` по энергии
+- [stage2/results/validated_minima.csv](stage2/results/validated_minima.csv) — только true minima без мнимых частот
+- [stage2/results/best_result.json](stage2/results/best_result.json) — лучший true minimum, попавший в финал
+- [stage2/results/best_structure.xyz](stage2/results/best_structure.xyz) — финальная геометрия лучшего минимума
+- [stage2/results/final_report.md](stage2/results/final_report.md) — GitHub-ready итоговый отчет
+- [stage2/results/best_verified_minimum.json](stage2/results/best_verified_minimum.json) — legacy-алиас для обратной совместимости
 - [stage1/jobs_index.csv](stage1/jobs_index.csv) — манифест полной сетки `stage1`
 - [stage2/jobs_index.csv](stage2/jobs_index.csv) — манифест `10` job для валидации
 

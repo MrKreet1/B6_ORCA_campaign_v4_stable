@@ -12,7 +12,11 @@
 
 - `stage2/jobs_index.csv`
 - `stage2/results/summary.csv`
+- `stage2/results/top10.csv`
 - `stage2/results/validated_minima.csv`
+- `stage2/results/best_result.json`
+- `stage2/results/best_structure.xyz`
+- `stage2/results/final_report.md`
 - `stage2/results/best_verified_minimum.json`
 - `stage2/stage2_run.log`
 - `stage2/scripts/`
