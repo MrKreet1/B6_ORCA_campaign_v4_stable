@@ -8,6 +8,7 @@
 - `configs/` с параметрами `stage1` и `stage2`
 - `stage1/scripts/` и `stage2/scripts/`
 - `stage1/results/` и `stage2/results/`
+- `reports/` с отдельным отчетом по результатам и графиками
 - `stage1/jobs_index.csv` и `stage2/jobs_index.csv`
 - `stage1/stage1_run.log` и `stage2/stage2_run.log`
 - `docs/` с пояснениями по импорту и составу пакета

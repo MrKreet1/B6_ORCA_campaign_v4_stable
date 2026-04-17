@@ -355,6 +355,8 @@
 - [stage2/results/best_structure.xyz](stage2/results/best_structure.xyz) — финальная геометрия лучшего минимума
 - [stage2/results/final_report.md](stage2/results/final_report.md) — GitHub-ready итоговый отчет
 - [stage2/results/best_verified_minimum.json](stage2/results/best_verified_minimum.json) — legacy-алиас для обратной совместимости
+- [reports/calculation_results_report.md](reports/calculation_results_report.md) — отдельный отчет только по результатам расчетов
+- `reports/fig_stage1_best_by_template.png` и `reports/fig_stage2_validation_rank.png` — графики к результатному отчету
 - [stage1/jobs_index.csv](stage1/jobs_index.csv) — манифест полной сетки `stage1`
 - [stage2/jobs_index.csv](stage2/jobs_index.csv) — манифест `10` job для валидации
 
